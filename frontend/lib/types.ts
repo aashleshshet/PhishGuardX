@@ -6,6 +6,7 @@ export type Page =
   | "history"
   | "learn"
   | "reports"
+  | "intelligence"
   | "settings";
 export type Risk = "low" | "review" | "high";
 export interface Signal {
@@ -25,7 +26,55 @@ export interface Model {
   matchedFeatures: number;
   features: { text: string; contribution: number }[];
 }
+export interface ProviderResult {
+  source: string;
+  status: string;
+  matched?: boolean;
+  confirmed?: boolean;
+  available?: boolean;
+  cached?: boolean;
+  checked_at?: string | null;
+  last_successful_check?: string | null;
+  retry_at?: string | null;
+  indicator?: string | null;
+  target_brand?: string | null;
+  record_status?: string | null;
+  threat_type?: string | null;
+  message: string;
+  enabled?: boolean;
+  configured?: boolean;
+}
+export interface FeedStatus {
+  source: string;
+  status: string;
+  message: string;
+  count: number;
+  sync_enabled: boolean;
+  last_successful_sync?: string | null;
+  last_attempt?: string | null;
+  next_sync_at?: string | null;
+  interval_seconds?: number;
+  storage?: string;
+}
+export interface IntelligenceStatus {
+  providers: Record<string, ProviderResult>;
+  feed: FeedStatus;
+  checked_at: string;
+  storage: string;
+  durable_storage: boolean;
+  model_available: boolean;
+}
 export interface Analysis {
+  url?: string | null;
+  verdict?: string;
+  providers?: Record<string, ProviderResult>;
+  evidence?: {
+    source: string;
+    confirmed: boolean;
+    indicator: string | null;
+    description: string;
+  }[];
+  checked_at?: string;
   id: string;
   createdAt: string;
   kind: ScanKind;

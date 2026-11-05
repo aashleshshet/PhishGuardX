@@ -56,6 +56,7 @@ export function Scanner({
   seed?: string;
 }) {
   const [content, setContent] = useState(seed || "");
+  const [liveChecks, setLiveChecks] = useState(true);
   const [headers, setHeaders] = useState("");
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
@@ -190,13 +191,18 @@ export function Scanner({
     setBusy(true);
     setError("");
     setResult(null);
-    setProgress("Inspecting signals and running classifiers…");
+    setProgress("Checking available intelligence and running classifiers…");
     try {
       const response = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, content, headers }),
-        signal: AbortSignal.timeout(30000),
+        body: JSON.stringify({
+          kind,
+          content,
+          headers,
+          check_reputation: liveChecks,
+        }),
+        signal: AbortSignal.timeout(60000),
       });
       const data = await response.json();
       if (!response.ok)
@@ -408,12 +414,33 @@ export function Scanner({
               {error}
             </div>
           )}
+          {(kind === "url" || kind === "qr") && (
+            <div className="reputation-consent">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={liveChecks}
+                  disabled={busy}
+                  onChange={(e) => setLiveChecks(e.target.checked)}
+                />{" "}
+                Check live threat intelligence
+              </label>
+              <p>
+                {liveChecks
+                  ? "This URL, including its query parameters, may be sent to enabled reputation providers. Turn off for private links. Embedded credentials and fragments are never sent."
+                  : "Only the local feed, URL heuristics, and ML model will be used."}{" "}
+                <a href="/intelligence">View providers</a>
+              </p>
+            </div>
+          )}
           <div className="scan-actions">
             <span>
               <LockKeyhole size={14} />{" "}
               {isImage
                 ? "Images stay on your device"
-                : "No content retained by the server"}
+                : kind === "url"
+                  ? "No destinations visited"
+                  : "No content retained by the server"}
             </span>
             <Button
               onClick={() => void analyze()}
@@ -468,8 +495,10 @@ export function Scanner({
           <h3>A private second opinion.</h3>
           <p>
             {isImage
-              ? "Your image is decoded on your device. Only the text or destination you choose to analyze reaches our server."
-              : "Your content is processed for this scan and is not stored on the server or sent to external AI services."}
+              ? "Your image is decoded on your device. Only reviewed text or destinations reach our server. Live URL checks also use enabled reputation providers."
+              : kind === "url"
+                ? "Local heuristics and ML are combined with available threat intelligence. Only URL hashes and redacted cache results are retained; destinations are never visited."
+                : "Your content is processed for this scan and is not stored on the server or sent to external AI services."}
           </p>
         </div>
         <div className="aside-divider" />

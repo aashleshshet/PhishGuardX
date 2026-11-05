@@ -12,3 +12,6 @@ artifacts
 **/__pycache__
 **/.pytest_cache
 **/*.tsbuildinfo
+
+.data
+**/*.sqlite3*

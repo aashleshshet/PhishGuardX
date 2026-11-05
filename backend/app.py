@@ -1,15 +1,18 @@
 from pathlib import Path
-import os, json, hashlib, re
+import os, json, hashlib, re, secrets
+from functools import lru_cache
 from typing import Literal
 from fastapi import FastAPI, HTTPException, Request, Header
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 try:
     from .engine import analyze, MODELS
+    from .services.threat_intelligence import ThreatIntelligence
 except ImportError:
     from engine import analyze, MODELS
+    from services.threat_intelligence import ThreatIntelligence
 
-app=FastAPI(title='PhishGuardX Analysis API',version='1.0.0',description='Offline phishing indicators with calibrated baseline models. Submitted destinations are never visited.')
+app=FastAPI(title='PhishGuardX Analysis API',version='1.0.0',description='Threat intelligence, URL heuristics and calibrated baseline models. Submitted destinations are never visited.')
 
 @app.middleware('http')
 async def bound_input(request:Request,call_next):
@@ -29,17 +32,22 @@ class Scan(BaseModel):
     kind:Literal['url','email','qr','screenshot']
     content:str=Field(min_length=1,max_length=30000)
     headers:str=Field(default='',max_length=20000)
+    check_reputation:bool=True
+
+@lru_cache(maxsize=1)
+def intelligence():
+    return ThreatIntelligence()
 
 @app.get('/health')
 def health():
-    return {'status':'ok','models':all((MODELS/(k+'.json')).exists() for k in ('url','email')),'reputation':False,'cloudHistory':bool(os.getenv('DATABASE_URL')),'externalAI':False}
+    return {'status':'ok','models':all((MODELS/(k+'.json')).exists() for k in ('url','email')),'reputation':intelligence().openphish.settings.api_enabled or intelligence().openphish.settings.feed_enabled,'cloudHistory':bool(os.getenv('DATABASE_URL')),'externalAI':False}
 
 @app.get('/models')
 def models(): return json.loads((MODELS/'evaluation.json').read_text())
 
 @app.post('/analyze')
-def scan(payload:Scan):
-    try: return analyze(payload.kind,payload.content,payload.headers)
+async def scan(payload:Scan):
+    try: return await intelligence().analyze(payload.kind,payload.content,payload.headers,payload.check_reputation)
     except ValueError as exc: raise HTTPException(422,str(exc))
     except FileNotFoundError: raise HTTPException(503,'Models are unavailable. Run the documented training pipeline.')
 
@@ -78,3 +86,14 @@ def delete_history(x_history_token:str=Header(default='')):
     identity=owner(x_history_token)
     with database() as conn: conn.execute('DELETE FROM scan_history WHERE owner=%s',(identity,))
     return {'deleted':True}
+
+@app.get('/threat-intelligence')
+async def threat_status():
+    return await intelligence().status()
+
+@app.post('/internal/feed-sync')
+async def feed_sync(authorization:str=Header(default='')):
+    secret=os.getenv('CRON_SECRET','')
+    if not secret or not secrets.compare_digest(authorization, 'Bearer '+secret):
+        raise HTTPException(401,'Authorized scheduler required.')
+    return await intelligence().openphish.sync_feed()

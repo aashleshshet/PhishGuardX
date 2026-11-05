@@ -31,6 +31,7 @@ import { Button } from "./ui/button";
 import { useIdentity } from "./auth-provider";
 import { Overview } from "./overview";
 import { Scanner } from "./scanner";
+import { ThreatDashboard } from "./threat-intelligence";
 import { AnalysisResult } from "./result";
 import {
   AssistantPage,
@@ -70,6 +71,12 @@ const pages: { id: Page; label: string; icon: typeof Mail; group: string }[] = [
     group: "workspace",
   },
   { id: "learn", label: "Learning center", icon: BookOpen, group: "resources" },
+  {
+    id: "intelligence",
+    label: "Threat intelligence",
+    icon: ShieldCheck,
+    group: "resources",
+  },
   { id: "reports", label: "Reports", icon: FileBarChart2, group: "resources" },
 ];
 const defaults: Settings = {
@@ -81,6 +88,16 @@ function redact(result: Analysis): Analysis {
   return {
     ...result,
     evidenceText: "",
+    url: null,
+    evidence: result.evidence?.map((e) => ({ ...e, indicator: null })),
+    providers: result.providers
+      ? Object.fromEntries(
+          Object.entries(result.providers).map(([key, p]) => [
+            key,
+            { ...p, indicator: null },
+          ]),
+        )
+      : undefined,
     links: [],
     details: {
       protocol: result.details.protocol,
@@ -428,7 +445,11 @@ export function Workspace({ children }: { children: React.ReactNode }) {
               >
                 <Menu size={21} />
               </button>
-              <span className="breadcrumb-workspace">{identity.user ? (identity.user.firstName || accountName) : "PhishGuardX"}</span>
+              <span className="breadcrumb-workspace">
+                {identity.user
+                  ? identity.user.firstName || accountName
+                  : "PhishGuardX"}
+              </span>
               <span className="breadcrumb-slash">/</span>
               <strong>{current}</strong>
             </div>
@@ -564,6 +585,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
                 {page === "learn" && (
                   <LearnPage article={article} setArticle={setArticle} />
                 )}
+                {page === "intelligence" && <ThreatDashboard />}
                 {page === "reports" && <ReportsPage history={history} />}
                 {page === "settings" && (
                   <SettingsPage

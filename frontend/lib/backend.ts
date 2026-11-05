@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-const allowed = new Set(["analyze", "health", "models", "history"]);
+const allowed = new Set([
+  "analyze",
+  "health",
+  "models",
+  "history",
+  "threat-intelligence",
+]);
 export async function proxy(request: NextRequest, path: string) {
   if (!allowed.has(path))
     return NextResponse.json({ detail: "Not found" }, { status: 404 });
@@ -42,7 +48,7 @@ export async function proxy(request: NextRequest, path: string) {
       },
       body,
       cache: "no-store",
-      signal: AbortSignal.timeout(20000),
+      signal: AbortSignal.timeout(55000),
     });
     const data = await response.json();
     return NextResponse.json(data, {

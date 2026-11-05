@@ -19,5 +19,18 @@
       "entrypoint": "app:app"
     }
   },
-  "rewrites": [{ "source": "/(.*)", "destination": { "service": "frontend" } }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "frontend"
+      }
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/threat-feed",
+      "schedule": "0 4 * * *"
+    }
+  ]
 }

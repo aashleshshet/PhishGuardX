@@ -241,7 +241,7 @@ function responseFor(question: string, result: Analysis | null) {
   if (/model|probability|score|confidence/.test(q))
     return "The URL model is calibrated on a held-out historical phishing dataset. The email model is calibrated for historical spam, which is not the same as phishing.\n\nRisk categories combine explicit evidence rules with model classifications; they are not numeric probabilities. The models can miss new attacks and flag legitimate content. Reports includes measured evaluation results.";
   if (/private|privacy|store|save|data/.test(q))
-    return "Images are decoded in your browser. The text or URL you submit is sent to the PhishGuardX analysis service, processed in memory, and not retained by that service. No external AI receives it. Optional local history saves redacted summaries on this device. You can turn it off or erase it in Settings.";
+    return "For URL/QR scans, live reputation checks share the submitted URL with enabled providers and can be turned off. Hash-only caches and redacted provider results may be retained temporarily. Images are decoded in your browser. The text or URL you submit is sent to the PhishGuardX analysis service, processed in memory, and not retained by that service. No external AI receives it. Optional local history saves redacted summaries on this device. You can turn it off or erase it in Settings.";
   if (/url|link|domain|https/.test(q))
     return "Find the actual registered domain, not just a familiar brand name. For example, in paypal.com.account-check.example the registered domain is account-check.example.\n\nHTTPS encrypts a connection but does not establish the website’s identity. Open the official app or type a known address to verify a sensitive request.";
   return "I can explain scan results, suspicious links, email authentication, QR codes, privacy, or steps to take after clicking a link. This assistant uses curated guidance and your most recent analysis; it is not a general-purpose language model.\n\nFor a specific message or URL, run it through a scanner first, then ask me to explain the result.";
@@ -411,8 +411,8 @@ export function ReportsPage({ history }: { history: Analysis[] }) {
           <div>
             <h2>Your analysis report</h2>
             <p>
-              {history.length} local records. Includes redacted findings and
-              model outputs.
+              {history.length} local records. Includes redacted findings,
+              provider evidence, timestamps, and model outputs.
             </p>
           </div>
         </div>
@@ -689,6 +689,11 @@ export function SettingsPage({
           <p>
             We process submitted text in memory. No messages are retained by the
             analysis server, and no external AI service receives your content.
+          </p>
+          <p>
+            URL and QR scans can query independent reputation providers when
+            live checks are enabled. Turn them off for private links. Only URL
+            hashes and redacted results are cached.
           </p>
           <p>
             QR decoding and OCR happen in your browser. Fonts, OCR code, and

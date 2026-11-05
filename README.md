@@ -9,13 +9,13 @@ A working, research-oriented baseline—not an antivirus product or a guarantee 
 ## What works
 
 - **Email:** connect Google or Microsoft through Clerk with explicit read-only consent, choose one recent message, or paste text/upload `.eml`; inspect pressure tactics, sensitive-information requests, extracted links, sender/reply-domain differences, and reported SPF/DKIM/DMARC results.
-- **URLs:** offline lexical classification, actual domain parsing, Punycode, brand-name misuse, userinfo deception, private IPs, shortening and suspicious redirect parameters. Submitted destinations are never retrieved.
+- **URLs:** independent OpenPhish.eu API and OpenPhish.com local feed, optional PhishTank/Google Safe Browsing/URLhaus, plus offline lexical classification, actual domain parsing, Punycode, brand-name misuse, userinfo deception, private IPs, shortening and suspicious redirect parameters. Submitted destinations are never retrieved.
 - **QR codes:** decode PNG/JPEG/WebP locally, inspect the destination, and analyze without opening it.
 - **Screenshots:** self-hosted Tesseract OCR runs inside the browser; review extracted text before submitting it for analysis.
 - **Explanations:** supporting evidence, highlighted text, model contributions, explicit unavailable checks, and practical recommendations.
 - **Accounts:** Clerk sign-in, real user name/avatar, profile management, and separate local history per account.
 - **Workspace:** dashboard, all four analyzers, an evidence-based security assistant, searchable history, education, evaluation reports, JSON exports, and privacy settings.
-- **Privacy:** no external AI calls; raw text is processed in memory; optional browser history is redacted. Optional PostgreSQL stores only anonymous scan metadata.
+- **Privacy:** no external AI calls; raw text is processed in memory; live URL checks send the URL to enabled providers with an opt-out; optional browser history is redacted. Optional PostgreSQL stores only anonymous scan metadata.
 - **Optional extension:** Chrome Manifest V3, explicit URL submission, `activeTab` permission only; no page-content or background-history collection.
 
 ## Stack
@@ -41,7 +41,7 @@ In another terminal:
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000). FastAPI's interactive API documentation is at [localhost:8000/docs](http://localhost:8000/docs). Trained JSON models are committed, so training is not required to run the app. Offline analysis works without API keys. For accounts and mailbox imports, configure Clerk as described in [account setup](docs/ACCOUNTS.md).
+Open [localhost:3000](http://localhost:3000). FastAPI's interactive API documentation is at [localhost:8000/docs](http://localhost:8000/docs). Trained JSON models are committed, so training is not required to run the app. Offline analysis works without API keys. To enable the anonymous URL API locally, start the backend with `OPENPHISH_API_ENABLED=true .venv/bin/python -m uvicorn backend.app:app --host 127.0.0.1 --port 8000`. Configure feed storage and synchronization separately as documented in [OpenPhish setup](docs/OPENPHISH.md). For accounts and mailbox imports, configure Clerk as described in [account setup](docs/ACCOUNTS.md).
 
 ## Verify
 
@@ -99,9 +99,9 @@ This starts Next.js, FastAPI, and PostgreSQL; the database schema initializes on
 
 ## Deliberate limits
 
-No live reputation, WHOIS/domain age, DNS queries, redirect expansion, active crawling, or visual logo verification is performed. The interface says these checks are unavailable. Imported authentication headers are untrusted and are not cryptographically verified. The assistant is a curated, evidence-grounded explainer, not a general-purpose LLM. OCR is English-first and can misread text. Clerk provides accounts; local history does not sync across devices. Mailbox connections need custom Google/Microsoft OAuth credentials configured in Clerk. Hosted PostgreSQL must be configured separately; the default deployment uses local history.
+Live reputation is independently configurable; the dashboard shows actual availability, errors, rate limits, and feed freshness. No WHOIS/domain age, DNS queries, redirect expansion, active crawling, or visual logo verification is performed. Imported authentication headers are untrusted and are not cryptographically verified. The assistant is a curated, evidence-grounded explainer, not a general-purpose LLM. OCR is English-first and can misread text. Clerk provides accounts; local history does not sync across devices. Mailbox connections need custom Google/Microsoft OAuth credentials configured in Clerk. Hosted PostgreSQL must be configured separately; the default deployment uses local history.
 
-Before a high-traffic release, add durable rate limits, abuse monitoring, authenticated database ownership, retention jobs, stronger campaign/temporal evaluation, and a consented reputation-provider integration. Read [responsible use](docs/RESPONSIBLE_USE.md) and [API documentation](docs/API.md).
+Before a high-traffic release, add durable rate limits, abuse monitoring, authenticated database ownership, retention jobs, stronger campaign/temporal evaluation, and provider quota monitoring. Read [responsible use](docs/RESPONSIBLE_USE.md) and [API documentation](docs/API.md).
 
 ## Repository map
 
@@ -112,3 +112,7 @@ Before a high-traffic release, add durable rate limits, abuse monitoring, authen
 - `docs/` — deployment, datasets, models, privacy, and verification notes.
 
 Code is MIT licensed. Dataset, font, and OCR licenses remain separate; see [third-party notices](docs/THIRD_PARTY.md).
+
+## Threat intelligence
+
+See [OpenPhish integration](docs/OPENPHISH.md) for independent provider setup, verified schemas, feed licensing, persistent storage, daily hosted scheduling, cache and quota behavior, and mocked tests. Confirmed phishing records raise the scan to high risk. An absent record never means safe.

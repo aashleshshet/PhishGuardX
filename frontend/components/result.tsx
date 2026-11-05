@@ -11,6 +11,7 @@ import {
   ShieldAlert,
   ShieldCheck,
 } from "lucide-react";
+import { ProviderEvidence } from "./threat-intelligence";
 import { Button } from "./ui/button";
 import { exportJSON } from "@/lib/content";
 import type { Analysis, Risk } from "@/lib/types";
@@ -76,6 +77,12 @@ export function AnalysisResult({ result }: { result: Analysis }) {
           <p>{result.summary}</p>
         </div>
       </div>
+      {result.providers && (
+        <ProviderEvidence
+          providers={result.providers}
+          checkedAt={result.checked_at}
+        />
+      )}
       <div className="result-heading">
         <h3>
           What we found{" "}

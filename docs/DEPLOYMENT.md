@@ -38,3 +38,9 @@ Open `chrome://extensions`, enable Developer mode and load `extension/` as unpac
 ## Production considerations
 
 The app is a functional portfolio baseline. Before large-scale public use, configure distributed rate limits and bot controls, privacy-aware operational monitoring, a recent labeled evaluation corpus, provider consent flows, account authorization for shared persistence, and disaster recovery. Do not claim that missing threat intelligence or unknown results establish safety.
+
+## Persistent threat intelligence
+
+The free `phishguardx-threats` Neon resource is connected with the `THREAT` environment prefix, separate from optional history storage. Provider configuration lives in Vercel environment variables; API keys and cron authentication remain server-only. OpenPhish.eu and the authorized OpenPhish.com feed are enabled independently. PhishTank is enabled with conservative anonymous quotas; Google Safe Browsing and URLhaus require their own credentials and remain disabled until configured.
+
+`vercel.json` schedules `/api/cron/threat-feed` daily at 04:00 UTC, within Hobby scheduling limits. `CRON_SECRET` authenticates the frontend scheduler and private backend sync endpoint. Use `vercel crons run /api/cron/threat-feed` after deployment to initialize or test an eligible sync. The persistent lease prevents excess downloads; a successful local development sync does not substitute for verifying production status. See [OpenPhish details](OPENPHISH.md).

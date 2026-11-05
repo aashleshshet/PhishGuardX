@@ -17,6 +17,7 @@ export default async function Page({
         "history",
         "learn",
         "reports",
+        "intelligence",
         "settings",
       ].includes(section[0]))
   )

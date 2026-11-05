@@ -31,3 +31,17 @@ Requires `DATABASE_URL`, the schema in `backend/schema.sql`, and a browser-gener
 - `DELETE`: deletes only that owner’s records.
 
 Without a valid token: 401. Without configured PostgreSQL: 503. Tokens live on the device and are not account recovery credentials. The UI supports opt-in metadata writes and clearing; it does not rebuild full analysis history from these metadata-only records. Configure identity and authorization before using this as an organizational persistence service.
+
+## Threat intelligence in scan responses
+
+URL and QR requests accept `check_reputation` (boolean, default `true`). False skips external providers while retaining the local feed, heuristics and ML. Scans add `url`, `verdict` (`phishing`, `high_risk`, `suspicious`, or `unknown`), `providers`, `evidence` and `checked_at` to the existing analysis schema. These are PhishGuardX fields, not the native provider schema. Provider entries include source, status, matched/confirmed flags, availability, cache use, timestamps, a query-redacted matched indicator, and an explanatory message. Current result exports contain these fields; saved-history exports omit indicator URLs and evidence quotes.
+
+`not_found` is absence of a provider record, never a safety verdict. A verified phishing match overrides a low heuristic verdict. Stale/unverified indicators remain visibly unconfirmed. Provider failure does not discard ML/heuristic results.
+
+## GET /api/threat-intelligence
+
+Actual last-known API availability and last successful checks, feed count/freshness/sync status, storage persistence, and local model availability. Does not query providers or trigger sync. No credentials or bulk feed indicators are exposed.
+
+## GET /api/cron/threat-feed (scheduler only)
+
+Requires `Authorization: Bearer <CRON_SECRET>`. The frontend forwards an authenticated request to backend `POST /internal/feed-sync`. An unconfigured secret or missing/wrong authorization returns 401. The sync uses a persistent atomic lease, validates the complete snapshot, and preserves the previous data on failure. Hosting schedules this daily; local operators can run `python -m backend.sync_feed --once` or run the worker loop.
