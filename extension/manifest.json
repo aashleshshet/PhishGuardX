@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Inspect a URL on request. No background browsing collection.",
   "permissions": ["activeTab"],
-  "host_permissions": ["https://phishguardx.vercel.app/*"],
+  "host_permissions": ["https://phishguardx-pi.vercel.app/*"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Check a link with PhishGuardX"

@@ -14,7 +14,7 @@ scan.addEventListener("click", async () => {
   scan.disabled = true;
   result.textContent = "Analyzing without visiting the destination…";
   try {
-    const response = await fetch("https://phishguardx.vercel.app/api/analyze", {
+    const response = await fetch("https://phishguardx-pi.vercel.app/api/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ kind: "url", content: urlInput.value }),

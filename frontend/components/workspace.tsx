@@ -428,7 +428,7 @@ export function Workspace({ children }: { children: React.ReactNode }) {
               >
                 <Menu size={21} />
               </button>
-              <span className="breadcrumb-workspace">Workspace</span>
+              <span className="breadcrumb-workspace">{identity.user ? (identity.user.firstName || accountName) : "PhishGuardX"}</span>
               <span className="breadcrumb-slash">/</span>
               <strong>{current}</strong>
             </div>

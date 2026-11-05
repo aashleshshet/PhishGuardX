@@ -17,6 +17,7 @@ import {
 import { Button } from "./ui/button";
 import { ShieldArt } from "./shield-art";
 import { RiskBadge } from "./result";
+import { useIdentity } from "./auth-provider";
 import { articles, kindLabels } from "@/lib/content";
 import type { Analysis, Page, ScanKind } from "@/lib/types";
 export const toolsList = [
@@ -62,6 +63,8 @@ export function Overview({
   startSample: () => void;
   openArticle: (id: string) => void;
 }) {
+  const { user } = useIdentity();
+  const accountName = user?.firstName || user?.fullName || user?.username || user?.primaryEmailAddress?.emailAddress;
   const live = history.filter((r) => !r.sample);
   const concerns = live.filter((r) => r.risk !== "low").length;
   return (
@@ -72,7 +75,7 @@ export function Overview({
           <p>A little more clarity. A lot more confidence.</p>
         </div>
         <div className="local-tag">
-          <span className="status-dot" /> Your private workspace
+          <span className="status-dot" /> {accountName ? `Signed in as ${accountName}` : "Your security overview"}
         </div>
       </div>
       <section className="glass welcome-panel">

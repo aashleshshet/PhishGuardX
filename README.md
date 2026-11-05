@@ -1,5 +1,7 @@
 # PhishGuardX
 
+[Live website](https://phishguardx-pi.vercel.app) · [GitHub repository](https://github.com/aashleshshet/PhishGuardX)
+
 **Clarity before you click.** A multimodal phishing-analysis workspace with an Apple-inspired liquid-glass interface, self-hosted Google Sans, light/dark themes, and evidence-first explanations.
 
 A working, research-oriented baseline—not an antivirus product or a guarantee of safety. Real trained models run on every analysis; sample inputs are explicitly labeled.
