@@ -1,0 +1,170 @@
+{
+  "seed": 42,
+  "sources": {
+    "phiusiil.zip": {
+      "url": "https://archive.ics.uci.edu/static/public/967/phiusiil+phishing+url+dataset.zip",
+      "sha256": "0a639fd03aea6308c5b1c10c92aa23c2ce1505447a9137271865cd0badc9a59a"
+    },
+    "20030228_easy_ham.tar.bz2": {
+      "url": "https://spamassassin.apache.org/old/publiccorpus/20030228_easy_ham.tar.bz2",
+      "sha256": "2b7b65904bcfcc31d2b5f51946f2d261370b257402cbbd62930b46ab83367438"
+    },
+    "20030228_hard_ham.tar.bz2": {
+      "url": "https://spamassassin.apache.org/old/publiccorpus/20030228_hard_ham.tar.bz2",
+      "sha256": "ce2ce67880643dbde65ea7f85bffbfe4417349c4bd80b6b0de56262ae6b0a9c9"
+    },
+    "20030228_spam.tar.bz2": {
+      "url": "https://spamassassin.apache.org/old/publiccorpus/20030228_spam.tar.bz2",
+      "sha256": "c08debc32413804949a866be45ef78195cec2cbafd1da744ed76cdb860589743"
+    },
+    "20050311_spam_2.tar.bz2": {
+      "url": "https://spamassassin.apache.org/old/publiccorpus/20050311_spam_2.tar.bz2",
+      "sha256": "44280a0e28bf7645b2279e8e42659271ad82c6f40bf8d364dbda7f1df344a765"
+    }
+  },
+  "models": {
+    "url": {
+      "precision": 0.9302864363942712,
+      "recall": 0.8172062904717854,
+      "f1": 0.8700876588200532,
+      "accuracy": 0.8934313646279389,
+      "brier": 0.08357341854021981,
+      "confusion_matrix": [
+        [
+          6641,
+          331
+        ],
+        [
+          988,
+          4417
+        ]
+      ],
+      "count": 12377,
+      "kind": "url",
+      "positive_class": "phishing",
+      "threshold": 0.48,
+      "split_sizes": {
+        "train": 35411,
+        "validation": 5338,
+        "calibration": 6874,
+        "test": 12377
+      },
+      "groups_disjoint": true,
+      "comparison_validation": {
+        "logistic_regression": {
+          "precision": 0.9311079545454546,
+          "recall": 0.7075013491635186,
+          "f1": 0.8040478380864765,
+          "accuracy": 0.8802922442862495,
+          "brier": 0.09309248910362353,
+          "confusion_matrix": [
+            [
+              3388,
+              97
+            ],
+            [
+              542,
+              1311
+            ]
+          ],
+          "count": 5338
+        },
+        "naive_bayes": {
+          "precision": 0.9529806884970613,
+          "recall": 0.6125202374527793,
+          "f1": 0.7457293035479632,
+          "accuracy": 0.8550018733608092,
+          "brier": 0.12012100572426551,
+          "confusion_matrix": [
+            [
+              3429,
+              56
+            ],
+            [
+              718,
+              1135
+            ]
+          ],
+          "count": 5338
+        }
+      },
+      "false_positive_count": 331,
+      "false_negative_count": 988
+    },
+    "email": {
+      "precision": 0.9551451187335093,
+      "recall": 0.9972451790633609,
+      "f1": 0.9757412398921833,
+      "accuracy": 0.9799107142857143,
+      "brier": 0.012467626380820404,
+      "confusion_matrix": [
+        [
+          516,
+          17
+        ],
+        [
+          1,
+          362
+        ]
+      ],
+      "count": 896,
+      "kind": "email",
+      "positive_class": "spam (not phishing)",
+      "threshold": 0.16,
+      "split_sizes": {
+        "train": 2688,
+        "validation": 448,
+        "calibration": 448,
+        "test": 896
+      },
+      "groups_disjoint": true,
+      "comparison_validation": {
+        "logistic_regression": {
+          "precision": 0.9715909090909091,
+          "recall": 0.9606741573033708,
+          "f1": 0.9661016949152542,
+          "accuracy": 0.9732142857142857,
+          "brier": 0.022991422157899722,
+          "confusion_matrix": [
+            [
+              265,
+              5
+            ],
+            [
+              7,
+              171
+            ]
+          ],
+          "count": 448
+        },
+        "naive_bayes": {
+          "precision": 0.9651162790697675,
+          "recall": 0.9325842696629213,
+          "f1": 0.9485714285714286,
+          "accuracy": 0.9598214285714286,
+          "brier": 0.027502315746258756,
+          "confusion_matrix": [
+            [
+              264,
+              6
+            ],
+            [
+              12,
+              166
+            ]
+          ],
+          "count": 448
+        }
+      },
+      "false_positive_count": 17,
+      "false_negative_count": 1
+    }
+  },
+  "limitations": [
+    "Historical datasets, not a prospective or temporal evaluation.",
+    "URL evaluation uses a deterministic 60,000-row sample and domain-disjoint splits.",
+    "Email model detects historical spam; it is not calibrated as a phishing probability.",
+    "No visual brand-recognition or LLM is used. OCR evidence is probabilistic.",
+    "Neither model verifies reputation or proves safety."
+  ]
+}

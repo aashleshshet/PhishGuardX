@@ -1,0 +1,10 @@
+{
+  "name": "phishguardx-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "check": "npm --prefix frontend run check",
+    "test": ".venv/bin/python -m pytest backend/tests -q"
+  }
+}

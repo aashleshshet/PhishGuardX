@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PhishGuardX</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <h1>PhishGuardX</h1>
+    <p>Clarity before you click.</p>
+    <label for="url">URL to analyze</label
+    ><input id="url" type="url" placeholder="https://example.com" /><button
+      id="current"
+      class="secondary"
+    >
+      Use current tab URL
+    </button>
+    <p class="privacy">
+      Only the URL you submit is sent to PhishGuardX. Page content and browsing
+      history are never collected.
+    </p>
+    <button id="scan">Analyze URL</button>
+    <div id="result" role="status" aria-live="polite"></div>
+    <a
+      href="https://phishguardx.vercel.app/url"
+      target="_blank"
+      rel="noopener noreferrer"
+      >Open full dashboard →</a
+    >
+    <script src="popup.js"></script>
+  </body>
+</html>

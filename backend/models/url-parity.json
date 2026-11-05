@@ -1,0 +1,14 @@
+[
+  {
+    "text": "example.org/help",
+    "probability": 0.9041545973497355
+  },
+  {
+    "text": "paypal.verify-account.example/login?session=1",
+    "probability": 0.9982691292901485
+  },
+  {
+    "text": "example.com/a/b",
+    "probability": 0.996306449605241
+  }
+]

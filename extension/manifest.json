@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "PhishGuardX — Check a link",
+  "version": "1.0.0",
+  "description": "Inspect a URL on request. No background browsing collection.",
+  "permissions": ["activeTab"],
+  "host_permissions": ["https://phishguardx.vercel.app/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Check a link with PhishGuardX"
+  }
+}

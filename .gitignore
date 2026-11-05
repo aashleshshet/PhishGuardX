@@ -1,0 +1,15 @@
+node_modules/
+.tools/
+.next/
+.venv/
+.env*
+!.env.example
+.vercel/
+__pycache__/
+.pytest_cache/
+*.pyc
+ml/data/
+.DS_Store
+*.tsbuildinfo
+artifacts/
+.vercel
