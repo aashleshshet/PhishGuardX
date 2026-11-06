@@ -205,7 +205,7 @@ export function ThreatDashboard() {
                 <dd>{date(data.feed.last_successful_sync)}</dd>
               </div>
               <div>
-                <dt>Scheduled synchronization</dt>
+                <dt>Feed synchronization</dt>
                 <dd>
                   {data.feed.sync_enabled
                     ? `Enabled · at most once per ${Math.round((data.feed.interval_seconds || 86400) / 3600)} hours`

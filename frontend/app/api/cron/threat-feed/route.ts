@@ -28,11 +28,24 @@ export async function GET(request: Request) {
       redirect: "error",
       signal: AbortSignal.timeout(55000),
     });
-    return Response.json(await response.json(), {
-      status: response.status,
+    const outcome = await response.json();
+    const status =
+      typeof outcome.status === "string" ? outcome.status : "unavailable";
+    console.info(JSON.stringify({ event: "feed_scheduler", status }));
+    return Response.json(outcome, {
+      status: !response.ok
+        ? response.status
+        : status === "rate_limited"
+          ? 429
+          : ["unavailable", "not_configured"].includes(status)
+            ? 503
+            : 200,
       headers: { "Cache-Control": "no-store" },
     });
   } catch {
+    console.warn(
+      JSON.stringify({ event: "feed_scheduler", status: "unavailable" }),
+    );
     return Response.json(
       { detail: "Feed synchronization could not be reached." },
       { status: 503 },

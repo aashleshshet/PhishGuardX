@@ -3822,3 +3822,17 @@ html {
 .theme-preview-dark .theme-window i {
   background: #b52d43;
 }
+.nav-item > .nav-new {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.verdict-high,
+.risk-high {
+  color: #a92335;
+  background: #ffedf0;
+}
+[data-theme="dark"] .verdict-high,
+[data-theme="dark"] .risk-high {
+  color: #ffb1bc;
+  background: #391c24;
+}

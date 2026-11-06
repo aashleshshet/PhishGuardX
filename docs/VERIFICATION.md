@@ -1,6 +1,6 @@
 # Verification record
 
-Verified on 5 November 2026.
+Initial release verified on 5 November 2026; OpenPhish update verified on 6 November 2026.
 
 - Backend: 78 pytest tests passed, including 54 threat-intelligence tests plus the original 24 tests for malformed inputs, model parity, imported headers, input limits, and privacy behavior.
 - Frontend: strict TypeScript check passed; Next.js production Webpack build passed with Clerk enabled.
@@ -20,7 +20,11 @@ Verified on 5 November 2026.
 
 ## OpenPhish update verification
 
-- 87 automated tests pass in total (78 backend, 9 mailbox). Strict TypeScript and the production build pass.
+- 92 automated tests pass in total (78 backend, 9 mailbox, 5 scheduler). Strict TypeScript and the production build pass.
 - Real OpenPhish.eu benign lookup returns `not_found`; it combines with local ML into `unknown`, never safe. The real Community Feed synchronized 300 URL hashes into Neon without visiting indicators.
 - Built frontend → FastAPI → PostgreSQL/provider → response flow verified over HTTP. Invalid URL returns 422; unauthenticated scheduler returns 401.
-- Current visual inspection is unavailable because browser use is disabled in Work settings. Updated responsive CSS and themes build successfully; earlier screenshots do not verify the new UI.
+- Browser access was restored: the deployed threat-intelligence dashboard was inspected at desktop and mobile sizes in both themes. Live scanner/provider evidence is verified with benign data.
+
+- Production deployment and GitHub Actions for the OpenPhish integration succeeded. Live OpenPhish.eu and PhishTank checks returned real no-match results for Wikipedia, with the final verdict `unknown`. The daily authenticated Vercel cron is enabled.
+
+- The browser download permission for a current scan JSON report was declined; that download was not verified. Report serialization remains the existing JSON exporter and now includes the provider fields.
